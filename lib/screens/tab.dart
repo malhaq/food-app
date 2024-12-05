@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/models/meal.dart';
 import 'package:food_app/screens/categories.dart';
+import 'package:food_app/screens/filters.dart';
 import 'package:food_app/screens/meals.dart';
+import 'package:food_app/widgets/main_drawer.dart';
 
 class TabScreen extends StatefulWidget {
   const TabScreen({super.key});
@@ -16,12 +18,25 @@ class _TabScreen extends State<TabScreen> {
   int _selectedTabIndex = 0;
   final List<Meal> _favorites = [];
 
+  void _showInfoMessage(String msg) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+      ),
+    );
+  }
+
   void _addRemoveFavorite(Meal meal) {
-    if (_favorites.contains(meal)) {
-      _favorites.remove(meal);
-    } else {
-      _favorites.add(meal);
-    }
+    setState(() {
+      if (_favorites.contains(meal)) {
+        _favorites.remove(meal);
+        _showInfoMessage('Removed from favorites');
+      } else {
+        _favorites.add(meal);
+        _showInfoMessage('Added to favorites');
+      }
+    });
   }
 
   void _selectTab(int index) {
@@ -30,13 +45,25 @@ class _TabScreen extends State<TabScreen> {
     });
   }
 
+  void _setScreen(String identifier) {
+    Navigator.of(context).pop();
+    if (identifier == 'filters'){
+      Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => const FilterScreen(),),);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget activeTab = CategoriesScreen(onToggleFav: _addRemoveFavorite,);
+    Widget activeTab = CategoriesScreen(
+      onToggleFav: _addRemoveFavorite,
+    );
     var activeTabTitle = 'Categories';
 
     if (_selectedTabIndex == 1) {
-      activeTab = MealsScreen(meals: _favorites,onToggleFav: _addRemoveFavorite,);
+      activeTab = MealsScreen(
+        meals: _favorites,
+        onToggleFav: _addRemoveFavorite,
+      );
       activeTabTitle = 'Favorite meals';
     }
 
@@ -44,6 +71,7 @@ class _TabScreen extends State<TabScreen> {
       appBar: AppBar(
         title: Text(activeTabTitle),
       ),
+      drawer: MainDrawer(onSelectScreen: _setScreen,),
       body: activeTab,
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectTab,
