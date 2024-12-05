@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:food_app/models/category.dart';
 
 class CategoryGridItems extends StatelessWidget {
-  const CategoryGridItems({super.key, required this.category,required this.onSelectCategory});
+  const CategoryGridItems({
+    super.key,
+    required this.category,
+    required this.onSelectCategory,
+  });
 
   final Category category;
   final void Function() onSelectCategory;
@@ -19,7 +23,7 @@ class CategoryGridItems extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           gradient: LinearGradient(
             colors: [
-              category.color.withOpacity(0.6),
+              category.color.withOpacity(0.3),
               category.color.withOpacity(0.9),
             ],
             begin: Alignment.topRight,
