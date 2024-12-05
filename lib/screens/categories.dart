@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 
 import 'package:food_app/data/dummy_data.dart';
 import 'package:food_app/models/category.dart';
+import 'package:food_app/models/meal.dart';
 import 'package:food_app/widgets/category_grid_items.dart';
 import 'package:food_app/screens/meals.dart';
 
 class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({super.key});
+  const CategoriesScreen({
+    super.key,
+    required this.onToggleFav,
+  });
+
+  final void Function(Meal meal) onToggleFav;
 
   void _selectCategory(BuildContext context, Category category) {
     final filteredMealsList = dummyMeals
@@ -17,6 +23,7 @@ class CategoriesScreen extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => MealsScreen(
+          onToggleFav: onToggleFav,
           meals: filteredMealsList,
           title: category.title,
         ),
