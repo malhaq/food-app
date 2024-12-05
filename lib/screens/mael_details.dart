@@ -33,8 +33,20 @@ class MealDetailsScreen extends ConsumerWidget {
                   ),
                 );
               },
-              //icon: isFav? const Icon(Icons.favorite): const Icon(Icons.favorite_border),
-              icon: Icon(isFav ? Icons.favorite : Icons.favorite_border),
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (child, animation) {
+                  return RotationTransition(
+                    turns: Tween<double>(begin: 0.5,end: 1,).animate(animation),
+                    child: child,
+                  );
+                },
+                // child: isFav?  Icon(Icons.favorite,key: ValueKey(isFav)):  Icon(Icons.favorite_border,key: ValueKey(isFav)),
+                child: Icon(
+                  isFav ? Icons.favorite : Icons.favorite_border,
+                  key: ValueKey(isFav),
+                ),
+              ),
             )
           ],
         ),
