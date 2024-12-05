@@ -1,27 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:food_app/providers/filter_provider.dart';
 
-enum Filter {
-  glutenFree,
-  lactosFree,
-  vegetarian,
-  vegan,
-}
-
-class FilterScreen extends StatefulWidget {
+class FilterScreen extends ConsumerStatefulWidget {
   const FilterScreen({
     super.key,
-    required this.currentFilter,
   });
 
-  final Map<Filter, bool> currentFilter;
-
   @override
-  State<FilterScreen> createState() {
+  ConsumerState<FilterScreen> createState() {
     return _FilterScreenState();
   }
 }
 
-class _FilterScreenState extends State<FilterScreen> {
+class _FilterScreenState extends ConsumerState<FilterScreen> {
   var _glutenFree = false;
   var _lactosFree = false;
   var _isVegetarian = false;
@@ -30,10 +22,11 @@ class _FilterScreenState extends State<FilterScreen> {
   @override
   void initState() {
     super.initState();
-    _glutenFree = widget.currentFilter[Filter.glutenFree]!;
-    _lactosFree = widget.currentFilter[Filter.lactosFree]!;
-    _isVegetarian = widget.currentFilter[Filter.vegetarian]!;
-    _isVegan = widget.currentFilter[Filter.vegan]!;
+    final activeFilter = ref.read(filterProvider);
+    _glutenFree = activeFilter[Filter.glutenFree]!;
+    _lactosFree = activeFilter[Filter.lactosFree]!;
+    _isVegetarian = activeFilter[Filter.vegetarian]!;
+    _isVegan = activeFilter[Filter.vegan]!;
   }
 
   @override
@@ -43,15 +36,16 @@ class _FilterScreenState extends State<FilterScreen> {
         title: const Text('Your Filters'),
       ),
       body: PopScope(
-        canPop: false,
+        //canPop: false,
         onPopInvokedWithResult: (bool didPop, dynamic result) {
-          if (!didPop) {
-            Navigator.of(context).pop({
+          if (didPop) {
+            ref.read(filterProvider.notifier).setFilters({
               Filter.glutenFree: _glutenFree,
               Filter.lactosFree: _lactosFree,
               Filter.vegetarian: _isVegetarian,
               Filter.vegan: _isVegan,
             });
+            //Navigator.of(context).pop();
           }
           return;
         },
